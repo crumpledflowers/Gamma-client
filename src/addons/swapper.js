@@ -4,8 +4,8 @@ const fs = require("fs");
 const url = require("url");
 
 const initResourceSwapper = () => {
-  protocol.registerFileProtocol("gammaclient", (request, callback) => // Changed from "juiceclient"
-    callback({ path: request.url.replace("gammaclient://", "") }) // Changed from "juiceclient://"
+  protocol.registerFileProtocol("gammaclient", (request, callback) => 
+    callback({ path: request.url.replace("gammaclient://", "") }) 
   );
   protocol.registerFileProtocol("file", (request, callback) => {
     callback(decodeURIComponent(request.url.replace("file:///", "")));
@@ -13,12 +13,12 @@ const initResourceSwapper = () => {
 
   const SWAP_FOLDER = path.join(
     app.getPath("documents"),
-    "GammaClient", // Changed from "JuiceClient"
+    "GammaClient", 
     "swapper"
   );
   const assetsFolder = path.join(SWAP_FOLDER, "assets");
-  const folders = ["css", "media", "image", "glb", "js"]; // Changed "img" to "image"
-  let folder_regex_generator = "GammaClient[\\\\/]swapper[\\\\/]assets[\\\\/]("; // Changed from "JuiceClient"
+  const folders = ["css", "media", "image", "glb", "js"]; 
+  let folder_regex_generator = "GammaClient[\\\\/]swapper[\\\\/]assets[\\\\/]("; 
   folder_regex_generator += folders.join("|");
   folder_regex_generator += ")[\\\\/][^\\\\/]+\\.[^.]+$";
   let folder_regex = new RegExp(folder_regex_generator, "");
@@ -80,7 +80,7 @@ const initResourceSwapper = () => {
       swap.filter,
       (details, callback) => {
         const redirect =
-          "gammaclient://" + // Changed from "juiceclient://"
+          "gammaclient://" + //://"
           (swap.files[details.url.replace(/https|http|(\?.*)|(#.*)|\_/gi, "")] ||
             details.url);
         callback({ cancel: false, redirectURL: redirect });
