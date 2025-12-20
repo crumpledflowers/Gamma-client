@@ -4,8 +4,8 @@ const fs = require("fs");
 const url = require("url");
 
 const initResourceSwapper = () => {
-  protocol.registerFileProtocol("gammaclient", (request, callback) => 
-    callback({ path: request.url.replace("gammaclient://", "") }) 
+  protocol.registerFileProtocol("GammaClient", (request, callback) =>
+    callback({ path: request.url.replace("GammaClient://", "") })
   );
   protocol.registerFileProtocol("file", (request, callback) => {
     callback(decodeURIComponent(request.url.replace("file:///", "")));
@@ -13,12 +13,12 @@ const initResourceSwapper = () => {
 
   const SWAP_FOLDER = path.join(
     app.getPath("documents"),
-    "GammaClient", 
+    "GammaClient",
     "swapper"
   );
   const assetsFolder = path.join(SWAP_FOLDER, "assets");
-  const folders = ["css", "media", "image", "glb", "js"]; 
-  let folder_regex_generator = "GammaClient[\\\\/]swapper[\\\\/]assets[\\\\/]("; 
+  const folders = ["css", "media", "img", "js"];
+  let folder_regex_generator = "GammaClient[\\\\/]swapper[\\\\/]assets[\\\\/](";
   folder_regex_generator += folders.join("|");
   folder_regex_generator += ")[\\\\/][^\\\\/]+\\.[^.]+$";
   let folder_regex = new RegExp(folder_regex_generator, "");
@@ -54,7 +54,7 @@ const initResourceSwapper = () => {
       if (fs.statSync(filePath).isDirectory()) allFilesSync(filePath);
       else {
         const useAssets = folder_regex.test(filePath);
-        if (!useAssets) return;
+        if (!useAssets || filePath.toLowerCase().endsWith(".glb")) return;
 
         proxyUrls.forEach((proxy) => {
           const kirk = `*://${proxy}${filePath.replace(SWAP_FOLDER, "").replace(/\\/g, "/")}*`;
@@ -80,7 +80,7 @@ const initResourceSwapper = () => {
       swap.filter,
       (details, callback) => {
         const redirect =
-          "gammaclient://" + //://"
+          "GammaClient://" +
           (swap.files[details.url.replace(/https|http|(\?.*)|(#.*)|\_/gi, "")] ||
             details.url);
         callback({ cancel: false, redirectURL: redirect });
